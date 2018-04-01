@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+<h2 style="color:blue">鲜花销售系统登陆</h2>
+错误信息：<h4 th:text="${msg}"></h4>
+<form action="/login" method="post">
+    <p>账号：<input type="text" name="username" value="admin"/></p>
+    <p>密码：<input type="text" name="password" value="123456"/></p>
+    <p>验证码：<input type="text" name="randomCode">
+        <img th:src="@{/createImage}" height="40px" width="90px"
+             onclick="random(this)"/></p>
+    <P><input type="checkbox" name="rememberMe" id="rememberMe"/>记住我</P>
+    <p><input type="submit" value="登录"/></p>
+</form>
+<script th:inline="javascript">
+    function random(tmp) {
+        tmp.src = "/createImage?rnd=" + Math.random();
+    }
+</script>
+</body>
+</html>

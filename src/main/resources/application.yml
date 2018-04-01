@@ -1,0 +1,55 @@
+spring:
+# 数据源基础配置
+    datasource:
+      url: jdbc:mysql://localhost:3306/hua
+      username: root
+      password: yumaoying
+      driver-class-name: com.mysql.jdbc.Driver
+
+    jpa:
+      database: mysql
+      show-sql: true
+      hibernate:
+        ddl-auto: update
+        naming:
+          strategy: org.hibernate.cfg.DefaultComponentSafeNamingStrategy
+      properties:
+         hibernate:
+            dialect: org.hibernate.dialect.MySQL5Dialect
+
+#  thymeleaf配置
+#spring.thymeleaf.prefix=classpath:/templates/
+#spring.thymeleaf.suffix=.html
+#spring.thymeleaf.mode=HTML5
+#spring.thymeleaf.encoding=UTF-8
+# ;charset=<encoding> is added
+#spring.thymeleaf.content-type=text/html
+#spring.thymeleaf.cache
+#set to false for hot refresh
+    thymeleaf:
+       cache: false
+       mode: LEGACYHTML5
+       prefix: classpath:/templates/
+       thymeleaf.suffix: .html
+
+    redis:
+      database: 0
+      host: 127.0.0.1
+      port: 6379
+      password:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: 1
+        min-idle: 0
+      timeout: 0
+
+server:
+  port: 34001
+#  context-path: /flower
+
+
+
+
+
+
