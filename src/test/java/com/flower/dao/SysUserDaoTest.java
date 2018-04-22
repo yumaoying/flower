@@ -1,6 +1,6 @@
 package com.flower.dao;
 
-import com.flower.entity.UserInfo;
+import com.flower.entity.SysUser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,15 +15,15 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class UserInfoDaoTest {
+public class SysUserDaoTest {
     @Resource
-    private UserInfoDao userInfoDao;
+    private SysUserDao sysUserDao;
 
     @Test
     public void test() {
-        List<UserInfo> userInfoList = userInfoDao.findAll();
-        for (UserInfo userInfo : userInfoList) {
-            System.out.println("=========================================" + userInfo);
+        List<SysUser> sysUserList = sysUserDao.findAll();
+        for (SysUser sysUser : sysUserList) {
+            System.out.println("=========================================" + sysUser);
         }
     }
 }

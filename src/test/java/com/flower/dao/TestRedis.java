@@ -1,6 +1,6 @@
 package com.flower.dao;
 
-import com.flower.entity.UserInfo;
+import com.flower.entity.SysUser;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,10 +39,10 @@ public class TestRedis {
 
     @Test
     public void testObj() throws Exception {
-        UserInfo user = new UserInfo();
+        SysUser user = new SysUser();
         user.setUid(1);
         user.setName("kl");
-        ValueOperations<String, UserInfo> vo = redisTemplate.opsForValue();
+        ValueOperations<String, SysUser> vo = redisTemplate.opsForValue();
         vo.set("com.c", user);
         //设置com.c.t缓存失效时间为1s
         vo.set("com.c.t", user, 1, TimeUnit.SECONDS);

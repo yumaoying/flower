@@ -1,4 +1,4 @@
-package com.flower.Util;
+package com.flower.util;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
