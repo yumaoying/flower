@@ -1,5 +1,7 @@
 package com.flower.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -11,13 +13,14 @@ import java.util.List;
 @Entity
 public class SysRole implements Serializable {
 
-    private static final long serialVersionUID = -8913299371113281169L;
+    private static final long serialVersionUID = 8913299371113281169L;
     @Id
     @GeneratedValue
     private Integer id; // 编号
+    @Column(unique = true, nullable = false)
     private String role; //角色标识程序中判断使用,如"admin",这个是唯一的:
     private String description; // 角色描述,UI界面显示使用
-    private Boolean available = Boolean.FALSE; // 是否可用,如果不可用将不会添加给用户
+    private Integer available; // 是否可用,如果不可用将不会添加给用户
     //角色 -- 权限关系：多对多关系;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "SysRolePermission", joinColumns = {@JoinColumn(name = "roleId")}, inverseJoinColumns = {@JoinColumn(name = "permissionId")})
@@ -27,7 +30,10 @@ public class SysRole implements Serializable {
     //一个角色对应多个用户
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "SysUserRole", joinColumns = {@JoinColumn(name = "roleId")}, inverseJoinColumns = {@JoinColumn(name = "uid")})
-    private List<UserInfo> userInfos;
+    private List<SysUser> sysUsers;
+
+    @Transient
+    private Integer selected = 0; //角色是否已经拥有，用户界面显示,默认
 
     public Integer getId() {
         return id;
@@ -53,11 +59,11 @@ public class SysRole implements Serializable {
         this.description = description;
     }
 
-    public Boolean getAvailable() {
+    public Integer getAvailable() {
         return available;
     }
 
-    public void setAvailable(Boolean available) {
+    public void setAvailable(Integer available) {
         this.available = available;
     }
 
@@ -69,12 +75,13 @@ public class SysRole implements Serializable {
         this.permissions = permissions;
     }
 
-    public List<UserInfo> getUserInfos() {
-        return userInfos;
+    @JsonBackReference
+    public List<SysUser> getSysUsers() {
+        return sysUsers;
     }
 
-    public void setUserInfos(List<UserInfo> userInfos) {
-        this.userInfos = userInfos;
+    public void setSysUsers(List<SysUser> sysUsers) {
+        this.sysUsers = sysUsers;
     }
 
     @Override
@@ -85,6 +92,16 @@ public class SysRole implements Serializable {
                 ", description='" + description + '\'' +
                 ", available=" + available +
                 ", permissions=" + permissions +
+                ", selected=" + selected +
                 '}';
     }
+
+    public Integer getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Integer selected) {
+        this.selected = selected;
+    }
+
 }

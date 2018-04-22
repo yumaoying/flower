@@ -1,21 +1,26 @@
 spring:
 # 数据源基础配置
+#    datasource:
+#      url: jdbc:mysql://localhost:3306/hua?useUnicode=true&characterEncoding=utf-8&useSSL=false
+#      username: root
+#      password: yumaoying
+#      driver-class-name: com.mysql.jdbc.Driver
     datasource:
-      url: jdbc:mysql://localhost:3306/hua
-      username: root
-      password: yumaoying
-      driver-class-name: com.mysql.jdbc.Driver
+       url: jdbc:log4jdbc:mysql://localhost:3306/hua??useUnicode=true&characterEncoding=utf-8&useSSL=false
+       username: root
+       password: yumaoying
+       driverClassName:  net.sf.log4jdbc.DriverSpy
 
-    jpa:
-      database: mysql
-      show-sql: true
-      hibernate:
-        ddl-auto: update
-        naming:
-          strategy: org.hibernate.cfg.DefaultComponentSafeNamingStrategy
-      properties:
-         hibernate:
-            dialect: org.hibernate.dialect.MySQL5Dialect
+#    jpa:
+#      database: mysql
+#      show-sql: true
+#      hibernate:
+#        ddl-auto: update
+#        naming:
+#          strategy: org.hibernate.cfg.DefaultComponentSafeNamingStrategy
+#      properties:
+#         hibernate:
+#            dialect: org.hibernate.dialect.MySQL5Dialect
 
 #  thymeleaf配置
 #spring.thymeleaf.prefix=classpath:/templates/
@@ -44,9 +49,37 @@ spring:
         min-idle: 0
       timeout: 0
 
+#    邮箱配置
+    mail:
+      #邮件服务地址
+      host: smtp.qq.com
+      #用户名
+      username: 1101271954@qq.com
+      #密码（授权码）
+      password: hkvzvkqwvdcwbaac
+      #默认编码UTF-8
+      default-encoding: utf-8
+      #端口，这里添加587即可
+      port: 587
+      properties:
+            mail:
+              smtp:
+                auth: true
+                starttls:
+                  enable: true
+                  required: true
+#文件上传
+    http:
+      multipart:
+       # 单个文件大小
+        max-file-size: 50MB
+        # 总上传数据大小
+        max-request-size: 50MB
 server:
   port: 34001
 #  context-path: /flower
+
+
 
 
 

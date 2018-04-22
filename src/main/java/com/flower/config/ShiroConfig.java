@@ -45,12 +45,16 @@ public class ShiroConfig {
         // 配置不会被拦截的链接 顺序判断
         // anon：它对应的过滤器里面是空的,什么都没做,可以理解为不拦截
         filterChainDefinitionMap.put("/static/**", "anon");
+        filterChainDefinitionMap.put("/css/**", "anon");
+        filterChainDefinitionMap.put("/js/**", "anon");
+        filterChainDefinitionMap.put("/img/**", "anon");
+        filterChainDefinitionMap.put("/fonts/**", "anon");
         filterChainDefinitionMap.put("/createImage", "anon");
         //配置退出 过滤器,其中的具体的退出代码Shiro已经替我们实现了
         filterChainDefinitionMap.put("/logout", "logout");
-        //配置记住我或认证通过可以访问的地址
-        filterChainDefinitionMap.put("/index", "user");
-        filterChainDefinitionMap.put("/", "user");
+//        //配置记住我或认证通过可以访问的地址
+//        filterChainDefinitionMap.put("/index", "user");
+//        filterChainDefinitionMap.put("/", "user");
         //对于角色是2,拥有权限userInfo:add才可以访问
         filterChainDefinitionMap.put("/add", "roles[2]，perms[userInfo:add]");
         // authc:所有url都必须认证通过才可以访问; anon:所有url都都可以匿名访问-->
@@ -77,8 +81,8 @@ public class ShiroConfig {
     @Bean
     public HashedCredentialsMatcher hashedCredentialsMatcher() {
         //对登陆多次可以打开此注释
-        HashedCredentialsMatcher hashedCredentialsMatcher = new RetryLimitCredentialMatcher(ehCacheManager());
-        // HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
+        // HashedCredentialsMatcher hashedCredentialsMatcher = new RetryLimitCredentialMatcher(ehCacheManager());
+        HashedCredentialsMatcher hashedCredentialsMatcher = new HashedCredentialsMatcher();
         //散列算法:这里使用MD5算法加密;还可以使用SHA1，SHA1、SHA512
         hashedCredentialsMatcher.setHashAlgorithmName("md5");
         //散列的次数，比如散列两次，相当于 md5(md5(""))，加密两次;
@@ -104,7 +108,7 @@ public class ShiroConfig {
         //配置权限身份认证
         securityManager.setRealm(myShiroRealm());
         //缓存管理
-        securityManager.setCacheManager(ehCacheManager());
+//        securityManager.setCacheManager(ehCacheManager());
         //配置记住我管理
         securityManager.setRememberMeManager(rememberMeManager());
         return securityManager;

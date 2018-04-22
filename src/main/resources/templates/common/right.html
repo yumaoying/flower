@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/css/dataTables.bootstrap.min.css"
+          th:href="@{/css/dataTables.bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/css/flower.css" th:href="@{/css/flower.css}">
+    <!--<link rel="stylesheet" href="../../static/css/jquery.dataTables.min.css"-->
+    <!--th:href="@{/css/jquery.dataTables.min.css}">-->
+    <script src="../../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+    <script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src="../../static/js/jquery.dataTables.min.js" th:src="@{/js/jquery.dataTables.min.js}"></script>
+    <script src="../../static/js/dataTables.bootstrap.min.js" th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+    <script src="../../static/js/layer.js" th:src="@{/js/layer.js}"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="">
+    <!--breadcrumb-nav-->
+    <div class="content-header">
+        <ol class="breadcrumb">
+            <li><a href="#"><span class="glyphicon glyphicon-home ">&nbsp;主页</span></a></li>
+            <li><span class="glyphicon glyphicon-chevron-right"></span></li>
+            <li><a href="#"><span class="glyphicon glyphicon-tree-deciduous left-menu-icon">&nbsp;用户管理</span></a>
+            </li>
+        </ol>
+    </div>
+    <!--container-->
+    <div class="container-fluid">
+        <div class="page panel-default">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-list left-menu-icon"></span>用户列表
+            </div>
+            <!--search nav-->
+            <div class="panel-body">
+                <form class="form-inline" role="form">
+                    <div class="form-group">
+                        <lable class="control-label">编号:</lable>
+                        <input class="form-control" id="id-search" type="text" placeholder="编号">
+                    </div>
+                    <div class="form-group">
+                        <lable class="control-label">账户名:</lable>
+                        <input class="form-control" id="username-search" type="text" placeholder="账户名">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">状态</label>
+                        <select class="form-control" id="state-search">
+                            <option value>全部</option>
+                            <option value="1">开启</option>
+                            <option value="0">关闭</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="search();">查询</button>
+                    <button type="button" class="btn btn-info btn-stl" onclick="allotRole()">分配角色</button>
+                    <button type="button" class="btn btn-info btn-stl" onclick="delUserById()">删除用户</button>
+                    <button type="button" class="btn btn-info btn-stl" onclick="$('#addUser').modal();">添加用户</button>
+                </form>
+            </div>
+        </div>
+        <!--table-->
+        <table class="table table-striped table-bordered dataTable" cellspacing="0" width="100%" id="datatable">
+            <thead>
+            <tr>
+                <th><input type="checkbox" class="checkall"/></th>
+                <th>ID</th>
+                <th>账户名</th>
+                <th>用户真实姓名</th>
+                <th>是否启用</th>
+                <th>用户角色</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<!--添加用户弹窗-->
+<div class="modal fade" id="addUser" role="dialog" tabindex="-1" aria-labelledby="addUserLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;
+                </button>
+                <h4 class="modal-title" id="addUserLabel">添加用户</h4>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label class="control-label">账户名:</label>
+                        <input type="text" class="form-control" name="username" id="username" placeholder="请输入用户名">
+                        <span class="btn-action single glyphicons circle_question_mark" data-toggle="tooltip"
+                              data-placement="top" data-original-title="必填"><i></i></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">密码:</label>
+                        <input type="text" class="form-control" name="password" id="password" placeholder="请输入密码">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">真实姓名:</label>
+                        <input type="text" class="form-control" name="name" id="name" placeholder="请输入真实姓名">
+                    </div>
+                    <label class="control-label">用户状态:</label>
+                    <div class="form-group">
+                        <label class="radio-inline">
+                            <input type="radio" name="state" value="1" class="state" checked> 开启
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="state" class="state" value="0"> 未开启
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="addUser();">添加用户</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--分配角色弹窗-->
+<div class="modal fade" id="selectRole" role="dialog" tabindex="-1" aria-labelledby="selectRoleLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;
+                </button>
+                <h4 class="modal-title" id="selectRoleLabel">分配角色</h4>
+            </div>
+            <div class="modal-body">
+                <form id="selectRoleForm">
+                    <div class="sysUser"></div>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered" id="roleTable">
+                            <caption>角色信息</caption>
+                            <thead>
+                            <tr>
+                                <th class="text-center"><input type="checkbox" class="checkallRoleAll">是否分配角色</th>
+                                <th class="text-center">角色id</th>
+                                <th class="text-center">角色标识</th>
+                                <th class="text-center">角色描述</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="selectRole();">分配角色</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //封装查询参数
+    function getQueryCondition(data) {
+        var param = {};
+        //组装排序参数
+        param.uid = $("#id-search").val();//查询条件
+        param.username = $("#username-search").val();//查询条件
+        param.state = $("#state-search").val();//查询条件
+        //组装分页参数
+        param.start = data.start; //第一条数据的起始位置，比如0代表第一条数据
+        param.length = data.length;//告诉服务器每页显示的条数
+        param.draw = data.draw;//绘制计数器。这个是用来确保Ajax从服务器返回的是对应的,服务器接收到此参数后再返回
+        return param;
+    }
+
+    //全选框选中时，子复选框都选上
+    $(".checkall").click(function () {
+        var check = $(this).prop("checked");
+        $(".checkchild").prop("checked", check);
+    });
+
+    var table;
+    $(document).ready(function () {
+        table = $('#datatable').DataTable({
+            "dom": '<"top"i>rt<"bottom"flp><"clear">',//"Bfrtip"
+//             l - Length changing  选择每页显示行数下拉框的控件
+//             f - Filtering input  搜索过滤控件
+//             t - The Tabletools    导出excel，csv的按钮
+//         i - Information  显示汇总信息（从 1 到 100 /共 1,288 条数据）
+// p - Pagination   分页控件
+//         r - pRocessing   显示加载时的进度条
+//         C - copy 显示复制，excel的控件
+            //iDisplayLength: 100,  //表示默认1页是100行数据,默认是10行
+            //lengthMenu: [[100, 500, 1000, -1],[100, 500, 1000, "所有"]]自定义每页显示的行数[[10 25 50 100], [10 25 50 100]]
+            serverSide: true, //开启服务端模式,使用服务器端处理配置datatable
+            processing: true,//开启读取服务器数据时显示正在加载中……特别是大数据量的时候，开启此功能比较好
+            searching: false,//搜索
+            ordering: false,//排序
+            // buttons: [
+            //     'copy', 'excel', 'pdf'
+            // ],
+            // tableTools: {
+            //     sSwfPath: "/js/datatables/tabletools/swf/copy_csv_xls_pdf.swf",
+            //     aButtons: [
+            //         {
+            //             sExtends: "csv",
+            //             oSelectorOpts: {page: "current"},
+            //             sFileName: "test.csv", //导出为csv文件，并且指定了文件的名称
+            //         },
+            //         "print"], //打印控件
+            //     sRowSelect: "os",
+            // },
+            // paging: false,//禁止分页,指定它才能显示表格底部的分页按钮,dom需要设置p
+            // scrollY: 500,//启用垂直滚动条
+            // scrollX: 40,//水平滚动条
+            // sPaginationType: "bootstrap",
+            // bJQueryUI: true,
+            // sPaginationType: "full_numbers", //simple、simple_numbers、full和 full_numbers, 默认使用 simple_numbers
+            // "ajax": "scripts/server_processing.php"
+            // autoWidth:true;//用来启用或禁用自动列的宽度计算。通常被禁用作为优化（它需要一个有限的时间量来计算的宽度），默认值是true，所以通常将它设为false
+            language: {
+                url: "css/zh_CN.txt"
+            },
+            ajax: function (data, callback, settings) {
+                var param = getQueryCondition(data);
+                $.ajax({
+                    type: "GET",
+                    url: "sysUser/users",
+                    cache: false,  //禁用缓存
+                    data: param,    //传入已封装的参数
+                    dataType: "json",
+                    success: function (result) {
+                        //返回封装的数据 如果参数相同，可以直接返回result
+                        var returnData = {};
+                        returnData.draw = result.draw; //这里直接自行返回了draw计数器,应该由后台返回
+                        returnData.recordsTotal = result.recordsTotal; //总记录数
+                        returnData.recordsFiltered = result.recordsFiltered;//后台不实现过滤功能，每次查询均视作全部结果
+                        returnData.data = result.data;
+                        //调用DataTables提供的callback方法，代表数据已封装完成并传回DataTables进行渲染
+                        //此时的数据需确保正确无误，异常判断应在执行此回调前自行处理完毕
+                        callback(returnData);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("查询失败" + errorThrown);
+                    }
+                });
+            }
+            ,
+            "columns":
+                [
+                    {
+                        "sClass": "text-center",
+                        "data": "uid",
+                        "render": function (data, type, full, meta) {
+                            return '<input type="checkbox"  class="checkchild"  value="' + data + '" />';
+                        },
+                        'bSortable': false
+                    },
+                    {"data": "uid"},
+                    {"data": "username"},
+                    {"data": "name"},
+                    {"data": "state"},
+                    {
+                        "data": function (obj) {
+                            var html = "";
+                            for (var i = 0; i < obj.roleList.length; i++) {
+                                html += obj.roleList[i].role + " "
+                            }
+                            return html;
+                        }
+                    },
+                ],
+            columnDefs:
+                [
+                    {"orderable": false, "targets": 1}, // 目标列位置，下标从0开始
+                    {"orderable": false, "targets": 2},
+                    {"orderable": false, "targets": 3},
+                    {
+                        "orderable": false,
+                        // 返回自定义内容
+                        "render": function (data, type, row) {
+                            if (data == 1) {
+                                return "开启";
+                            } else {
+                                return "关闭";
+                            }
+                        },
+                        "targets": 4
+                    },
+                    {"orderable": false, "targets": 5},
+                ],
+        })
+        ;
+    });
+
+    //按条件查询
+    function search() {
+        table.ajax.reload();
+    }
+
+    //添加用户
+    function addUser() {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        if (username == "" || username == undefined || username == null) {
+            return layer.msg('用户名不能为空', function () {
+                //关闭后的操作
+            });
+        }
+        if (password == "" || password == undefined || username == null) {
+            return layer.msg('密码不能为空', function () {
+                //关闭后的操作
+            });
+        }
+
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: 'sysUser/add',
+            data: $('#addUserForm').serialize(),// 你的formid
+            async: false,
+            success: function (data) {
+                if (data == "success") {
+                    layer.msg('保存成功');
+                    table.ajax.reload();
+                    $('#addUser').modal('hide');
+                } else if (data = "error") {
+                    layer.msg('该用户已存在');
+                    $('#addUser').modal('hide');
+                } else {
+                    layer.msg('保存失败');
+                    $('#addUser').modal('hide');
+                }
+            }
+        });
+    }
+
+    //删除用户
+    function delUserById() {
+        var id = $(".checkchild:checked").val();
+        if ($(".checkchild:checked").length < 1) {
+            layer.msg('请选择一条数据');
+            return;
+        }
+        if ($(".checkchild:checked").length > 1) {
+            layer.msg('一次只能修改一条数据');
+            return;
+        }
+        layer.confirm('您确定要删除该用户吗？', {
+            btn: ['确认', '取消'] //按钮
+        }, function () {
+            $.ajax({
+                cache: true,
+                type: "POST",
+                url: 'sysUser/delete',
+                data: {id: id},
+                async: false,
+                success: function (data) {
+                    if (data == "success") {
+                        layer.msg('删除成功');
+                        table.ajax.reload();
+                    } else {
+                        layer.msg('删除失败');
+                    }
+                }
+            });
+        });
+    }
+
+    //弹出选择角色的框
+    function allotRole() {
+        var id = $(".checkchild:checked").val();
+        if ($(".checkchild:checked").length < 1) {
+            layer.msg('请选择一条数据');
+            return;
+        }
+        if ($(".checkchild:checked").length > 1) {
+            layer.msg('一次只能修改一条数据');
+            return;
+        }
+        $.ajax({
+            async: false,
+            type: "POST",
+            data: {uid: id},
+            url: 'role/rolesWithSelected',
+            dataType: "json",
+            success: function (data) {
+                // $("#selectRoleForm").empty();
+                // var htm = "<input type='hidden' name='uid' value='" + id + "'>";
+                // for (var i = 0; i < data.length; i++) {
+                //     htm += "<div class='checkbox'><label><input type='checkbox' name='id' value='" + data[i].id + "'";
+                //     if (data[i].selected == 1) {
+                //         htm += " checked='checked'";
+                //     }
+                //     htm += "/>" + data[i].description + "</label></div>";
+                // }
+                $(".sysUser").empty();
+                $(".sysUser").append("<input type='hidden' name='uid' id='uid' value='" + id + "'>");
+                $("#roleTable tr:has(td)").remove();
+                var html = "";
+                for (var i = 0; i < data.length; i++) {
+                    html += "<tr><td class='text-center'><input type='checkbox' class='checkRole'  name='roleId' value='" + data[i].id + "'"
+                    if (data[i].selected == 1) {
+                        html += " checked='checked'";
+                    }
+                    //角色是否可分配
+                    if (data[i].available == 0) {
+                        html += "disabled ";
+                    }
+                    html += "/>" + "</td><td class='text-center'>" + data[i].id + "</td><td class='text-center'>" + data[i].role + "</td><td class='text-center'>" + data[i].description + "</td></tr>";
+                }
+                $("#roleTable").append(html)
+            }
+        });
+        $('#selectRole').modal();
+    }
+
+
+    //保存分配的角色
+    function selectRole() {
+        var roleId = [];
+        $(".checkRole:checked").each(function (i) {
+            roleId[i] = $(this).val();
+        });
+        var uid = $("#uid").val();
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: "sysUser/addUserRole",
+            data: {roleId: roleId, uid: uid},
+            async: false,
+            traditional: true,
+            success: function (data) {
+                if (data == "success") {
+                    layer.msg('保存成功');
+                    $('#selectRole').modal('hide');
+                } else {
+                    layer.msg('保存失败');
+                    $('#selectRole').modal('hide');
+                }
+            }
+        })
+    }
+
+    //角色全选框选中时，子复选框都选上
+    $(".checkallRoleAll").click(function () {
+        var check = $(this).prop("checked");
+        $(".checkRole").each(function () {
+                if (!this.disabled) {
+                    $(this).prop("checked", check);
+                }
+            }
+        );
+    });
+
+</script>
+
+</body>
+</html>

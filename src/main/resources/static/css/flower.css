@@ -1,0 +1,38 @@
+.left-menu-icon {
+    color: rgb(212, 106, 64);
+    padding-right: 18px;
+}
+
+.breadcrumb > li + li:before {
+    content: "";
+}
+
+.btn-stl {
+    float: right;
+    margin-right: 10px;
+}
+
+.left-menu-icon {
+    color: rgb(212, 106, 64);
+}
+
+.left-menu {
+    width: 14%;
+    float: left;
+    height: 100%;
+}
+
+.righ_page {
+    float: right;
+    width: 85%;
+    height: 100%;
+}
+
+body {
+    background: #F0F8FF;
+
+}
+
+.navbar-inverse {
+    background-color: #2E363F;
+}

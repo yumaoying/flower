@@ -1,0 +1,43 @@
+<div th:fragment="header">
+    <nav class="navbar navbar-inverse nav-pills" role="navigation">
+        <div>
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#my-navbar-collapse">
+                    <span class="sr-only"></span>
+                    <span class="sr-only">切换导航</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <img src="../../static/img/logo.png" th:src="@{/img/logo.png}" class="img-circle"
+                     style="height:100px;width:179px;padding:10px;"><a class="navbar-brand" href="#"></a>
+            </div>
+        </div>
+        <div class="collapse navbar-collapse" id="my-navbar-collapse">
+            <ul class="nav navbar-nav navbar-right" style="margin-top: 2%;">
+                <li class="dropdown active" id="person-message">
+                    <a title="" href="#" data-toggle="dropdown" data-target="#person-message">
+                        <span class="glyphicon glyphicon-user">&nbsp;欢迎你</span><b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a th:href="@{/sysUser/loadUser}"><span
+                                    class="glyphicon glyphicon-tags btn">&nbsp;个人信息</span></a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a href="#"><span class="glyphicon glyphicon-time btn">&nbsp;我的任务</span></a></li>
+                    </ul>
+                </li>
+                <li><a title="" href="#">
+                    <span class="glyphicon glyphicon-envelope">&nbsp;信息&nbsp;</span>
+                    <span class="badge pull-right">50</span>
+                </a>
+                </li>
+                <li class=""><a title="" href="#"><span class="glyphicon glyphicon-cog">&nbsp;设置</span></a></li>
+                <li class=""><a href="/logout"><span class="glyphicon glyphicon-log-out">&nbsp;退出&nbsp;</span></a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+

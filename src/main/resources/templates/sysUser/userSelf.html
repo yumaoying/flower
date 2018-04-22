@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>鲜花销售系统</title>
+    <link rel="stylesheet" href="../../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/css/dataTables.bootstrap.min.css"
+          th:href="@{/css/dataTables.bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/css/flower.css" th:href="@{/css/flower.css}">
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div th:include="common/header :: header"></div>
+<div th:include="common/menu :: menu"></div>
+<div class="righ_page">
+    <!--breadcrumb-nav-->
+    <div class="content-header">
+        <ol class="breadcrumb">
+            <li><a href="#"><span class="glyphicon glyphicon-home ">&nbsp;主页</span></a></li>
+            <li><span class="glyphicon glyphicon-chevron-right"></span></li>
+            <li><a href="#"><span class="glyphicon glyphicon-tree-deciduous left-menu-icon">&nbsp;用户管理</span></a>
+            </li>
+        </ol>
+    </div>
+    <!--container-->
+    <div class="container-fluid">
+        <div class="page panel-default">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-list left-menu-icon"></span>个人信息
+            </div>
+            <!--search nav-->
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" id="editUserForm" style="width: 44%;margin-left: 10%;"
+                      method="post">
+                    <input type="hidden" value="" name="uid" class="uid"/>
+                    <div class="form-group">
+                        <lable class="control-label">账户名:</lable>
+                        <input class="form-control" name="username" id="username" type="text" value="">
+                    </div>
+                    <div class="form-group">
+                        <lable class="control-label">真实姓名:</lable>
+                        <input class="form-control" name="name" type="text" value="" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">状态</label>
+                        <select class="form-control" name="state" id="edit-state">
+                            <option value="0" class="state">关闭</option>
+                            <option value="1" class="state">开启</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="editSysUser()">修改个人信息</button>
+                </form>
+            </div>
+
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-list left-menu-icon"></span>重置密码
+            </div>
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" id="editUserPassForm"
+                      style="width: 44%;margin-left: 10%;" method="post">
+                    <input type="hidden" value="" class="uid" name="uid" class="uid"/>
+                    <div class="form-group">
+                        <lable class="control-label">用户密码:</lable>
+                        <input class="form-control" name="password" type="password" value="" id="edit-password"
+                               placeholder="新密码">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="editUserPass()">重置密码</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="footer" style="height:40px;"></div>
+</div>
+
+<script src="../../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+<script src="../../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+<script src="../../static/js/jquery.dataTables.min.js" th:src="@{/js/jquery.dataTables.min.js}"></script>
+<script src="../../static/js/dataTables.bootstrap.min.js" th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+<script src="../../static/js/layer.js" th:src="@{/js/layer.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    $(document).ready(function () {
+        findByUid();
+    });
+
+    function findByUid() {
+        var uid = $(".uid").val();
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: '/sysUser/findUser',
+            data: {uid: uid},
+            async: false,
+            dataType: "json",
+            success: function (data) {
+                $(".uid").val(data.uid);
+                $("#username").val(data.username);
+                $("#name").val(data.name);
+                $("#edit-state option[value='" + data.state + "']").attr("selected", true);
+                $("select[name=state]").prop("disabled", true);
+            }
+        });
+    }
+
+    //编辑用户信息
+    function editSysUser() {
+        var username = $("#username").val();
+        if (username == "" || username == undefined || username == null) {
+            return layer.msg('用户名不能为空', function () {
+                //关闭后的操作
+            });
+        }
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: '/sysUser/edit',
+            data: $('#editUserForm').serialize(),
+            async: false,
+            success: function (data) {
+                layer.msg(data);
+                $('#editUserForm').modal('hide');
+                if (data == "success") {
+                    layer.msg('修改成功');
+                    findByUid();
+                } else if (data == "fail") {
+                    layer.msg('账户名已存在');
+                    $("select[name=state]").prop("disabled", true);
+                } else {
+                    layer.msg('保存失败');
+                    $("select[name=state]").prop("disabled", true);
+                }
+            }
+        });
+    }
+
+    function editUserPass() {
+        var password = $("#edit-password").val();
+        if (password == "" || password == undefined || password == null) {
+            return layer.msg('密码不能为空', function () {
+                //关闭后的操作
+            });
+        }
+        var uid = $("#newpass-uid").val();
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: '/sysUser/newPassword',
+            data: $('#editUserPassForm').serialize(),
+            async: false,
+            success: function (data) {
+                if (data == "success") {
+                    layer.msg('密码修改成功');
+                } else {
+                    layer.msg('密码修改失败');
+                }
+            }
+        });
+    }
+</script>
+<div th:include="common/footer :: footer"></div>
+</body>
+</html>
